@@ -83,10 +83,6 @@
       .question-bold {
         font-weight: bold;
       }
-      .answer-underline {
-        text-decoration: underline;
-        text-underline-offset: 4px;
-      }
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
@@ -349,18 +345,6 @@
                   <span class="lang-en hidden">Answers on separate pages</span>
                 </label>
               </div>
-              <!-- 新增：答案添加下划线选项 -->
-              <div class="flex items-center">
-                <input 
-                  type="checkbox" 
-                  id="answerUnderline" 
-                  class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
-                >
-                <label for="answerUnderline" class="ml-2 text-sm text-gray-700">
-                  <span class="lang-zh">答案添加下划线</span>
-                  <span class="lang-en hidden">Add underline to answers</span>
-                </label>
-              </div>
             </div>
           </div>
           
@@ -606,7 +590,6 @@
     const splitCountInput = document.getElementById('splitCount'); // 新增
     const includeAnswersCheckbox = document.getElementById('includeAnswers');
     const answersOnNewPageCheckbox = document.getElementById('answersOnNewPage');
-    const answerUnderlineInput = document.getElementById('answerUnderline'); // 新增
     const questionsPages = document.getElementById('questionsPages');
     const answersContainer = document.getElementById('answersContainer');
     const initialMessage = document.getElementById('initialMessage');
@@ -710,7 +693,6 @@
     fontSizeInput.addEventListener('input', updateLayoutAndPagination);
     fontBoldInput.addEventListener('change', updateLayoutAndPagination); // 新增
     splitCountInput.addEventListener('input', updateLayoutAndPagination); // 新增
-    answerUnderlineInput.addEventListener('change', updateLayoutAndPagination); // 新增
     
     // 分页按钮事件
     prevPageBtn.addEventListener('click', () => {
@@ -946,7 +928,6 @@
       answersContainer.innerHTML = '';
       const colCount = parseInt(colCountInput.value) || 6;
       const fontSize = parseInt(fontSizeInput.value) || 14;
-      const isAnswerUnderline = answerUnderlineInput.checked;
       const splitCount = parseInt(splitCountInput.value) || 0;
       
       answerPages.forEach((page, pageIndex) => {
@@ -970,7 +951,7 @@
           
           page.forEach((answer, index) => {
             const answerEl = document.createElement('div');
-            answerEl.className = `p-3 border border-gray-100 rounded-lg bg-neutral ${isAnswerUnderline ? 'answer-underline' : ''}`;
+            answerEl.className = `p-3 border border-gray-100 rounded-lg bg-neutral`;
             answerEl.style.fontSize = `${fontSize}px`;
             answerEl.textContent = answer;
             segmentElement.appendChild(answerEl);
@@ -997,7 +978,7 @@
               
               currentSegment.forEach((answer, index) => {
                 const answerEl = document.createElement('div');
-                answerEl.className = `p-3 border border-gray-100 rounded-lg bg-neutral ${isAnswerUnderline ? 'answer-underline' : ''}`;
+                answerEl.className = `p-3 border border-gray-100 rounded-lg bg-neutral`;
                 answerEl.style.fontSize = `${fontSize}px`;
                 answerEl.textContent = answer;
                 segmentElement.appendChild(answerEl);
@@ -1278,7 +1259,6 @@
       const splitCount = parseInt(splitCountInput.value) || 0; // 新增
       const includeAnswers = includeAnswersCheckbox.checked;
       const answersOnNewPage = answersOnNewPageCheckbox.checked;
-      const answerUnderline = answerUnderlineInput.checked; // 新增
 
       // 生成文件名
       const date = new Date();
@@ -1307,11 +1287,11 @@
       exportBtn.innerHTML = `<i class="fa fa-spinner fa-spin mr-2"></i> ${currentLang === 'zh' ? '导出中...' : 'Exporting...'}`;
 
       // 调用PDF导出函数
-      exportAsPdf(fileName, paper, fontSize, fontBold, rowCount, colCount, splitCount, includeAnswers, answersOnNewPage, answerUnderline);
+      exportAsPdf(fileName, paper, fontSize, fontBold, rowCount, colCount, splitCount, includeAnswers, answersOnNewPage);
     }
     
-    // 导出为PDF（优化字体和边界，新增加粗、分段、下划线支持）
-    function exportAsPdf(fileName, paper, fontSize, fontBold, rowCount, colCount, splitCount, includeAnswers, answersOnNewPage, answerUnderline) {
+    // 导出为PDF（优化字体和边界，新增加粗、分段支持）
+    function exportAsPdf(fileName, paper, fontSize, fontBold, rowCount, colCount, splitCount, includeAnswers, answersOnNewPage) {
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF('p', 'mm', [paper.width, paper.height]);
       
@@ -1325,7 +1305,7 @@
       
       const fontSizePt = fontSize * 0.75;
       // 修正行高计算（1px = 0.264583mm，增加20%避免拥挤）
-            const rowHeight = (fontSize * 1.8) * 0.264583;
+      const rowHeight = (fontSize * 1.8) * 0.264583;
       const segmentGap = 10; // 段间距（mm）
       
       // 添加题目页面
@@ -1424,15 +1404,7 @@
                 const y = startY + (row * rowHeight);
                 
                 if (y + rowHeight < paper.height - paper.margin - 10) {
-                  // 答案下划线支持
-                  if (answerUnderline) {
-                    // 先绘制文本，再绘制下划线
-                    pdf.text(answer, x, y);
-                    const textWidth = pdf.getTextWidth(answer);
-                    pdf.line(x, y + 2, x + textWidth, y + 2); // 下划线位置
-                  } else {
-                    pdf.text(answer, x, y);
-                  }
+                  pdf.text(answer, x, y);
                 }
               });
               
@@ -1448,13 +1420,7 @@
               const y = startY + (row * rowHeight);
               
               if (y + rowHeight < paper.height - paper.margin - 10) {
-                if (answerUnderline) {
-                  pdf.text(page[i], x, y);
-                  const textWidth = pdf.getTextWidth(page[i]);
-                  pdf.line(x, y + 2, x + textWidth, y + 2);
-                } else {
-                  pdf.text(page[i], x, y);
-                }
+                pdf.text(page[i], x, y);
               }
             }
           }

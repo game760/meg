@@ -5,18 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>运算题生成器</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- 引入开源字体（思源黑体+Roboto） -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <!-- 国内备用字体CDN -->
   <link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-100-M/noto-sans-sc/4.003/noto-sans-sc.css" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-100-M/roboto/4.0.3-1/roboto.css" media="print" onload="this.media='all'">
-  
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   
-  <!-- Tailwind 配置 -->
   <script>
     tailwind.config = {
       theme: {
@@ -29,8 +25,8 @@
           },
           fontFamily: {
             sans: [
-              '"Noto Sans SC"', // 中文开源字体
-              'Roboto', // 英文开源字体
+              '"Noto Sans SC"',
+              'Roboto',
               'system-ui', 
               'sans-serif'
             ],
@@ -80,9 +76,6 @@
       .lang-switch:not(.active) {
         @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
       }
-      .question-bold {
-        font-weight: bold;
-      }
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
@@ -92,7 +85,6 @@
 </head>
 
 <body class="bg-gray-50 min-h-screen font-sans text-gray-800">
-  <!-- 顶部导航 -->
   <header class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300">
     <div class="container mx-auto px-4 py-4 flex flex-wrap justify-between items-center">
       <div class="flex items-center space-x-3">
@@ -105,12 +97,10 @@
         </h1>
       </div>
       <div class="flex items-center space-x-4 mt-2 md:mt-0">
-        <!-- 语言切换 -->
         <div class="flex space-x-2">
           <div id="lang-zh" class="lang-switch active" data-lang="zh">中文</div>
           <div id="lang-en" class="lang-switch" data-lang="en">English</div>
         </div>
-        <!-- GitHub链接 -->
         <a href="https://github.com/game760/opg" target="_blank" rel="noopener noreferrer" 
            class="text-gray-600 hover:text-gray-900 transition-colors">
           <i class="fa fa-github text-2xl"></i>
@@ -121,7 +111,6 @@
 
   <main class="container mx-auto px-4 py-8 max-w-7xl opacity-0 transition-opacity duration-500">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-      <!-- 左侧设置面板 -->
       <div class="lg:col-span-1">
         <div class="bg-white rounded-xl shadow-card p-6 transition-all duration-300 hover:shadow-card-hover transform hover:-translate-y-1">
           <h2 class="text-lg font-semibold text-gray-800 mb-6 flex items-center">
@@ -130,7 +119,6 @@
             <span class="lang-en hidden">Exercise Settings</span>
           </h2>
           
-          <!-- 使用提醒 -->
           <div class="bg-amber-50 border-l-4 border-amber-400 p-4 mb-6 rounded-r-lg">
             <div class="flex">
               <div class="flex-shrink-0">
@@ -166,6 +154,33 @@
               <span class="ml-2 text-gray-500 lang-zh">题</span>
               <span class="ml-2 text-gray-500 lang-en hidden">questions</span>
             </div>
+          </div>
+
+          <!-- 新增：分段设置 -->
+          <div class="setting-group">
+            <label for="sectionCount" class="block text-sm font-medium text-gray-700 mb-2">
+              <i class="fa fa-columns text-primary mr-1"></i> 
+              <span class="lang-zh">分段数量</span>
+              <span class="lang-en hidden">Section Count</span>
+            </label>
+            <div class="flex items-center">
+              <input 
+                type="number" 
+                id="sectionCount" 
+                min="1" 
+                max="20" 
+                value="1" 
+                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg input-focus"
+              >
+              <span class="ml-2 text-gray-500 lang-zh">段</span>
+              <span class="ml-2 text-gray-500 lang-en hidden">sections</span>
+            </div>
+            <p class="mt-2 text-xs text-gray-500 lang-zh">
+              会将总题数平均分配到每一段中
+            </p>
+            <p class="mt-2 text-xs text-gray-500 lang-en hidden">
+              Total questions will be evenly distributed to each section
+            </p>
           </div>
           
           <!-- 数字范围设置 -->
@@ -237,23 +252,25 @@
             </div>
           </div>
 
-          <!-- 新增：字体加粗设置 -->
+          <!-- 新增：字体加粗选项 -->
           <div class="setting-group">
             <label class="block text-sm font-medium text-gray-700 mb-2">
               <i class="fa fa-bold text-primary mr-1"></i> 
               <span class="lang-zh">字体样式</span>
               <span class="lang-en hidden">Font Style</span>
             </label>
-            <div class="flex items-center">
-              <input 
-                type="checkbox" 
-                id="fontBold" 
-                class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
-              >
-              <label for="fontBold" class="ml-2 text-sm text-gray-700">
-                <span class="lang-zh">题目文字加粗</span>
-                <span class="lang-en hidden">Bold question text</span>
-              </label>
+            <div class="flex items-center space-x-4">
+              <div class="flex items-center">
+                <input 
+                  type="checkbox" 
+                  id="fontBold" 
+                  class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
+                >
+                <label for="fontBold" class="ml-2 text-sm text-gray-700">
+                  <span class="lang-zh">加粗题目文字</span>
+                  <span class="lang-en hidden">Bold Question Text</span>
+                </label>
+              </div>
             </div>
           </div>
           
@@ -289,27 +306,6 @@
                   class="w-full px-3 py-2.5 border border-gray-300 rounded-lg input-focus"
                 >
               </div>
-            </div>
-          </div>
-
-          <!-- 新增：每多少题分段选项 -->
-          <div class="setting-group">
-            <label for="splitCount" class="block text-sm font-medium text-gray-700 mb-2">
-              <i class="fa fa-columns text-primary mr-1"></i> 
-              <span class="lang-zh">分段设置</span>
-              <span class="lang-en hidden">Segment Settings</span>
-            </label>
-            <div class="flex items-center">
-              <input 
-                type="number" 
-                id="splitCount" 
-                min="0" 
-                max="100" 
-                value="0" 
-                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg input-focus"
-              >
-              <span class="ml-2 text-gray-500 lang-zh">题/段（0为不分段）</span>
-              <span class="ml-2 text-gray-500 lang-en hidden">qns/segment (0=none)</span>
             </div>
           </div>
           
@@ -401,7 +397,7 @@
             </div>
           </div>
           
-          <!-- 格式设置（仅保留PDF） -->
+          <!-- 格式设置 -->
           <div class="setting-group">
             <label class="block text-sm font-medium text-gray-700 mb-2">
               <i class="fa fa-file-text-o text-primary mr-1"></i> 
@@ -409,7 +405,6 @@
               <span class="lang-en hidden">Export format</span>
             </label>
             <div class="grid grid-cols-1 gap-3">
-              <!-- 仅保留PDF选项 -->
               <div class="relative">
                 <input 
                   type="radio" 
@@ -452,7 +447,6 @@
         </div>
       </div>
       
-      <!-- 右侧题目显示区域 -->
       <div class="lg:col-span-2">
         <div class="bg-white rounded-xl shadow-card p-6 transition-all duration-300 hover:shadow-card-hover h-full">
           <div class="flex justify-between items-center mb-6">
@@ -469,7 +463,6 @@
             </div>
           </div>
           
-          <!-- 初始提示 -->
           <div id="initialMessage" class="text-center py-16 text-gray-500">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
               <i class="fa fa-lightbulb-o text-2xl text-primary"></i>
@@ -478,7 +471,6 @@
             <p class="text-gray-600 lang-en hidden">Please set parameters and click "Generate questions"</p>
           </div>
           
-          <!-- 分页导航 -->
           <div id="paginationControls" class="hidden mb-6 flex justify-between items-center">
             <button id="prevPage" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 btn-effect disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none" disabled>
               <i class="fa fa-chevron-left mr-1"></i> 
@@ -502,14 +494,12 @@
             </button>
           </div>
           
-          <!-- 题目容器 -->
           <div id="questionsContainer" class="hidden">
             <div id="questionsPages" class="space-y-8">
               <!-- 页面内容动态生成 -->
             </div>
           </div>
           
-          <!-- 答案区域分页 -->
           <div class="mt-8 pt-6 border-t border-gray-100">
             <button id="toggleAnswersBtn" class="text-primary hover:text-primary/80 text-sm font-medium flex items-center btn-effect px-2 py-1 rounded">
               <i class="fa fa-eye mr-1"></i>
@@ -545,7 +535,6 @@
             </div>
           </div>
           
-          <!-- 加载状态 -->
           <div id="loadingIndicator" class="hidden text-center py-16">
             <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-primary border-t-transparent mb-4"></div>
             <p class="text-gray-600 lang-zh">正在生成题目...</p>
@@ -567,8 +556,7 @@
     </div>
   </footer>
 
-<script>
-    // 全局变量
+  <script>
     let generatedQuestions = [];
     let generatedAnswers = [];
     let questionPages = [];
@@ -576,18 +564,18 @@
     let currentPage = 1;
     let currentAnswerPage = 1;
     let currentLang = 'zh';
+    // 新增：分段相关变量
+    let sectionedQuestions = [];
+    let sectionedAnswers = [];
     
-    // DOM元素
     const generateBtn = document.getElementById('generateBtn');
     const exportBtn = document.getElementById('exportBtn');
     const toggleAnswersBtn = document.getElementById('toggleAnswersBtn');
     const questionCountInput = document.getElementById('questionCount');
     const numberRangeInput = document.getElementById('numberRange');
     const fontSizeInput = document.getElementById('fontSize');
-    const fontBoldInput = document.getElementById('fontBold'); // 新增
     const rowCountInput = document.getElementById('rowCount');
     const colCountInput = document.getElementById('colCount');
-    const splitCountInput = document.getElementById('splitCount'); // 新增
     const includeAnswersCheckbox = document.getElementById('includeAnswers');
     const answersOnNewPageCheckbox = document.getElementById('answersOnNewPage');
     const questionsPages = document.getElementById('questionsPages');
@@ -600,22 +588,22 @@
     const pageStats = document.getElementById('pageStats');
     const pageStatsEn = document.getElementById('pageStats-en');
     const header = document.querySelector('header');
+    // 新增：分段和加粗DOM元素
+    const sectionCountInput = document.getElementById('sectionCount');
+    const fontBoldCheckbox = document.getElementById('fontBold');
     
-    // 分页控制元素
     const paginationControls = document.getElementById('paginationControls');
     const prevPageBtn = document.getElementById('prevPage');
     const nextPageBtn = document.getElementById('nextPage');
     const currentPageEl = document.getElementById('currentPage');
     const totalPagesEl = document.getElementById('totalPages');
     
-    // 答案分页控制元素
     const answersPaginationControls = document.getElementById('answersPaginationControls');
     const prevAnswerPageBtn = document.getElementById('prevAnswerPage');
     const nextAnswerPageBtn = document.getElementById('nextAnswerPage');
     const currentAnswerPageEl = document.getElementById('currentAnswerPage');
     const totalAnswerPagesEl = document.getElementById('totalAnswerPages');
     
-    // 语言切换元素
     const langZhBtn = document.getElementById('lang-zh');
     const langEnBtn = document.getElementById('lang-en');
     
@@ -624,6 +612,25 @@
       const rowCount = parseInt(rowCountInput.value) || 40;
       const colCount = parseInt(colCountInput.value) || 6;
       return rowCount * colCount;
+    }
+    
+    // 新增：分段处理函数
+    function splitIntoSections(questions, answers) {
+      const totalQuestions = questions.length;
+      const sectionCount = parseInt(sectionCountInput.value) || 1;
+      const questionsPerSection = Math.ceil(totalQuestions / sectionCount);
+      
+      const sectionedQ = [];
+      const sectionedA = [];
+      
+      for (let i = 0; i < sectionCount; i++) {
+        const start = i * questionsPerSection;
+        const end = Math.min((i + 1) * questionsPerSection, totalQuestions);
+        sectionedQ.push(questions.slice(start, end));
+        sectionedA.push(answers.slice(start, end));
+      }
+      
+      return [sectionedQ, sectionedA];
     }
     
     // 分割题目为页面组
@@ -638,7 +645,6 @@
       return pages;
     }
     
-    // 更新分页显示
     function updatePagination() {
       const totalPages = questionPages.length;
       currentPageEl.textContent = currentPage;
@@ -658,7 +664,6 @@
       }
     }
     
-    // 更新答案分页显示
     function updateAnswerPagination() {
       const totalAnswerPages = answerPages.length;
       currentAnswerPageEl.textContent = currentAnswerPage;
@@ -672,7 +677,6 @@
       });
     }
     
-    // 行列数变化时重新分页
     function updateLayoutAndPagination() {
       if (generatedQuestions.length === 0) return;
       
@@ -687,14 +691,13 @@
       updateAnswerPagination();
     }
     
-    // 监听行列数变化
     rowCountInput.addEventListener('input', updateLayoutAndPagination);
     colCountInput.addEventListener('input', updateLayoutAndPagination);
     fontSizeInput.addEventListener('input', updateLayoutAndPagination);
-    fontBoldInput.addEventListener('change', updateLayoutAndPagination); // 新增
-    splitCountInput.addEventListener('input', updateLayoutAndPagination); // 新增
+    // 新增：分段数变化时重新渲染
+    sectionCountInput.addEventListener('input', updateLayoutAndPagination);
+    fontBoldCheckbox.addEventListener('change', updateLayoutAndPagination);
     
-    // 分页按钮事件
     prevPageBtn.addEventListener('click', () => {
       if (currentPage > 1) {
         currentPage--;
@@ -711,7 +714,6 @@
       }
     });
     
-    // 答案分页按钮事件
     prevAnswerPageBtn.addEventListener('click', () => {
       if (currentAnswerPage > 1) {
         currentAnswerPage--;
@@ -728,7 +730,6 @@
       }
     });
     
-    // 滚动到容器顶部
     function scrollToTopOfContainer() {
       questionsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -737,7 +738,6 @@
       answersContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     
-    // 滚动时导航栏效果
     window.addEventListener('scroll', () => {
       if (window.scrollY > 10) {
         header.classList.add('shadow');
@@ -746,13 +746,9 @@
       }
     });
     
-    // 生成题目
     generateBtn.addEventListener('click', generateQuestions);
-    
-    // 导出题目
     exportBtn.addEventListener('click', exportQuestions);
     
-    // 切换答案显示/隐藏
     toggleAnswersBtn.addEventListener('click', () => {
       const isHidden = answersContainer.classList.toggle('hidden');
       const icon = toggleAnswersBtn.querySelector('i');
@@ -773,11 +769,9 @@
       }
     });
     
-    // 语言切换事件
     langZhBtn.addEventListener('click', () => switchLanguage('zh'));
     langEnBtn.addEventListener('click', () => switchLanguage('en'));
     
-    // 切换语言
     function switchLanguage(lang) {
       if (lang === currentLang) return;
       
@@ -821,26 +815,70 @@
       updateAnswerPagination();
     }
     
-    // 获取纸张尺寸信息
     function getPaperDimensions() {
       return {
-        width: 210,   // A4宽度
-        height: 297,  // A4高度
-        margin: 20,   // 边距
-        contentWidth: 210 - 40,  // 内容宽度
-        contentHeight: 297 - 40  // 内容高度
+        width: 210,
+        height: 297,
+        margin: 20,
+        contentWidth: 210 - 40,
+        contentHeight: 297 - 40
       };
     }
     
-    // 渲染题目页面 - 修复分段为0的逻辑（移除下划线）
+    // 优化：渲染题目页面 - 支持分段和加粗
     function renderQuestionPages() {
       questionsPages.innerHTML = '';
       const colCount = parseInt(colCountInput.value) || 6;
       const fontSize = parseInt(fontSizeInput.value) || 14;
-      const isBold = fontBoldInput.checked;
-      const splitCount = parseInt(splitCountInput.value) || 0;
+      const isBold = fontBoldCheckbox.checked;
+      const sectionCount = parseInt(sectionCountInput.value) || 1;
       
-      questionPages.forEach((page, pageIndex) => {
+      // 先进行分段处理
+      [sectionedQuestions, sectionedAnswers] = splitIntoSections(generatedQuestions, generatedAnswers);
+      
+      // 构建包含分段标题的完整题目列表
+      let fullQuestionList = [];
+      sectionedQuestions.forEach((section, sectionIndex) => {
+        // 添加分段标题标记
+        fullQuestionList.push({
+          type: 'section-title',
+          index: sectionIndex + 1
+        });
+        // 添加当前段的题目
+        section.forEach(q => fullQuestionList.push({
+          type: 'question',
+          content: q
+        }));
+      });
+      
+      // 重新分页（处理分段标题）
+      const questionsPerPage = getQuestionsPerPage();
+      const newQuestionPages = [];
+      let currentPageItems = [];
+      let currentQuestionCount = 0;
+      
+      fullQuestionList.forEach(item => {
+        if (item.type === 'section-title') {
+          // 标题直接加入当前页
+          currentPageItems.push(item);
+        } else {
+          // 题目需要计数
+          if (currentQuestionCount >= questionsPerPage) {
+            newQuestionPages.push(currentPageItems);
+            currentPageItems = [];
+            currentQuestionCount = 0;
+          }
+          currentPageItems.push(item);
+          currentQuestionCount++;
+        }
+      });
+      
+      if (currentPageItems.length > 0) {
+        newQuestionPages.push(currentPageItems);
+      }
+      
+      // 渲染最终页面
+      newQuestionPages.forEach((page, pageIndex) => {
         const pageElement = document.createElement('div');
         pageElement.className = `question-page ${pageIndex === 0 ? '' : 'hidden'} page-shadow rounded-lg p-6 bg-white page-transition`;
         
@@ -851,78 +889,51 @@
           </h3>
         `;
         
-        const gridContainer = document.createElement('div');
-        gridContainer.className = 'space-y-6';
+        const gridElement = document.createElement('div');
+        gridElement.className = `grid grid-cols-${colCount} gap-3`;
         
-        // 修复：分段为0时直接渲染所有题目
-        if (splitCount <= 0) {
-          const segmentElement = document.createElement('div');
-          segmentElement.className = `grid grid-cols-${colCount} gap-3`;
-          
-          page.forEach((question, index) => {
+        page.forEach(item => {
+          if (item.type === 'section-title') {
+            // 渲染分段标题
+            const titleEl = document.createElement('div');
+            titleEl.className = `col-span-${colCount} text-center font-semibold text-primary mb-4 ${isBold ? 'font-bold' : ''}`;
+            titleEl.style.fontSize = `${fontSize + 2}px`;
+            titleEl.textContent = currentLang === 'zh' 
+              ? `第 ${item.index} 段` 
+              : `Section ${item.index}`;
+            gridElement.appendChild(titleEl);
+          } else {
+            // 渲染普通题目
             const questionEl = document.createElement('div');
-            questionEl.className = `flex items-center p-3 border border-gray-100 rounded-lg hover:bg-neutral transition-colors ${isBold ? 'question-bold' : ''}`;
+            questionEl.className = `flex items-center p-3 border border-gray-100 rounded-lg hover:bg-neutral transition-colors ${isBold ? 'font-bold' : ''}`;
             questionEl.style.fontSize = `${fontSize}px`;
             
-            // 移除下划线判断，统一渲染带横线的样式
-            questionEl.innerHTML = `
-              <span class="text-gray-800">${question}</span>
-              <span class="flex-1 border-b border-gray-300 mx-2"></span>
-            `;
-            
-            segmentElement.appendChild(questionEl);
-          });
-          
-          gridContainer.appendChild(segmentElement);
-        } else {
-          // 原有分段逻辑保持不变
-          let segmentIndex = 0;
-          let currentSegment = [];
-          
-          for (let i = 0; i < page.length; i++) {
-            currentSegment.push(page[i]);
-            
-            if (currentSegment.length >= splitCount || i === page.length - 1) {
-              segmentIndex++;
-              const segmentElement = document.createElement('div');
-              segmentElement.className = `grid grid-cols-${colCount} gap-3`;
-              
-              const segmentTitle = document.createElement('div');
-              segmentTitle.className = `col-span-${colCount} text-sm text-gray-500 mb-2`;
-              segmentTitle.innerHTML = `<span class="lang-zh">第 ${segmentIndex} 段</span><span class="lang-en hidden">Segment ${segmentIndex}</span>`;
-              segmentElement.appendChild(segmentTitle);
-              
-              currentSegment.forEach((question, index) => {
-                const questionEl = document.createElement('div');
-                questionEl.className = `flex items-center p-3 border border-gray-100 rounded-lg hover:bg-neutral transition-colors ${isBold ? 'question-bold' : ''}`;
-                questionEl.style.fontSize = `${fontSize}px`;
-                
-                // 移除下划线判断，统一渲染带横线的样式
-                questionEl.innerHTML = `
-                  <span class="text-gray-800">${question}</span>
-                  <span class="flex-1 border-b border-gray-300 mx-2"></span>
-                `;
-                
-                segmentElement.appendChild(questionEl);
-              });
-              
-              gridContainer.appendChild(segmentElement);
-              currentSegment = [];
+            if (item.content.includes('____')) {
+              questionEl.innerHTML = `<span class="text-gray-800">${item.content}</span>`;
+            } else {
+              questionEl.innerHTML = `
+                <span class="text-gray-800">${item.content}</span>
+                <span class="flex-1 border-b border-gray-300 mx-2"></span>
+              `;
             }
+            
+            gridElement.appendChild(questionEl);
           }
-        }
+        });
         
-        pageElement.appendChild(gridContainer);
+        pageElement.appendChild(gridElement);
         questionsPages.appendChild(pageElement);
       });
+      
+      // 更新分页数据
+      questionPages = newQuestionPages;
     }
     
-    // 渲染答案页面 - 修复分段为0的逻辑
     function renderAnswerPages() {
       answersContainer.innerHTML = '';
       const colCount = parseInt(colCountInput.value) || 6;
       const fontSize = parseInt(fontSizeInput.value) || 14;
-      const splitCount = parseInt(splitCountInput.value) || 0;
+      const isBold = fontBoldCheckbox.checked;
       
       answerPages.forEach((page, pageIndex) => {
         const pageElement = document.createElement('div');
@@ -935,72 +946,31 @@
           </h3>
         `;
         
-        const gridContainer = document.createElement('div');
-        gridContainer.className = 'space-y-6';
+        const gridElement = document.createElement('div');
+        gridElement.className = `grid grid-cols-${colCount} gap-3`;
         
-        // 修复：分段为0时直接渲染所有答案
-        if (splitCount <= 0) {
-          const segmentElement = document.createElement('div');
-          segmentElement.className = `grid grid-cols-${colCount} gap-3`;
-          
-          page.forEach((answer, index) => {
-            const answerEl = document.createElement('div');
-            answerEl.className = `p-3 border border-gray-100 rounded-lg bg-neutral`;
-            answerEl.style.fontSize = `${fontSize}px`;
-            answerEl.textContent = answer;
-            segmentElement.appendChild(answerEl);
-          });
-          
-          gridContainer.appendChild(segmentElement);
-        } else {
-          // 原有分段逻辑保持不变
-          let segmentIndex = 0;
-          let currentSegment = [];
-          
-          for (let i = 0; i < page.length; i++) {
-            currentSegment.push(page[i]);
-            
-            if (currentSegment.length >= splitCount || i === page.length - 1) {
-              segmentIndex++;
-              const segmentElement = document.createElement('div');
-              segmentElement.className = `grid grid-cols-${colCount} gap-3`;
-              
-              const segmentTitle = document.createElement('div');
-              segmentTitle.className = `col-span-${colCount} text-sm text-gray-500 mb-2`;
-              segmentTitle.innerHTML = `<span class="lang-zh">第 ${segmentIndex} 段</span><span class="lang-en hidden">Segment ${segmentIndex}</span>`;
-              segmentElement.appendChild(segmentTitle);
-              
-              currentSegment.forEach((answer, index) => {
-                const answerEl = document.createElement('div');
-                answerEl.className = `p-3 border border-gray-100 rounded-lg bg-neutral`;
-                answerEl.style.fontSize = `${fontSize}px`;
-                answerEl.textContent = answer;
-                segmentElement.appendChild(answerEl);
-              });
-              
-              gridContainer.appendChild(segmentElement);
-              currentSegment = [];
-            }
-          }
-        }
+        page.forEach((answer, index) => {
+          const answerEl = document.createElement('div');
+          answerEl.className = `p-3 border border-gray-100 rounded-lg bg-neutral ${isBold ? 'font-bold' : ''}`;
+          answerEl.style.fontSize = `${fontSize}px`;
+          answerEl.textContent = answer;
+          gridElement.appendChild(answerEl);
+        });
         
-        pageElement.appendChild(gridContainer);
+        pageElement.appendChild(gridElement);
         answersContainer.appendChild(pageElement);
       });
     }
     
-    // 生成题目函数
     function generateQuestions() {
-      // 验证输入
       const questionCount = parseInt(questionCountInput.value);
       const numberRange = parseInt(numberRangeInput.value);
       const fontSize = parseInt(fontSizeInput.value);
       const rowCount = parseInt(rowCountInput.value);
       const colCount = parseInt(colCountInput.value);
-      const splitCount = parseInt(splitCountInput.value); // 新增
+      const sectionCount = parseInt(sectionCountInput.value);
       
-      // 清除之前的错误高亮
-      [questionCountInput, numberRangeInput, fontSizeInput, rowCountInput, colCountInput, splitCountInput].forEach(el => {
+      [questionCountInput, numberRangeInput, fontSizeInput, rowCountInput, colCountInput, sectionCountInput].forEach(el => {
         el.classList.remove('border-red-500');
       });
       
@@ -1048,18 +1018,16 @@
         highlightInputError(colCountInput);
         return;
       }
-
-      // 新增：分段数量验证
-      if (isNaN(splitCount) || splitCount < 0 || splitCount > 100) {
+      
+      if (isNaN(sectionCount) || sectionCount < 1 || sectionCount > 20) {
         showNotification(
-          currentLang === 'zh' ? '请输入有效的分段数量（0-100）' : 'Please enter a valid segment count (0-100)', 
+          currentLang === 'zh' ? '请输入有效的分段数量（1-20）' : 'Please enter a valid section count (1-20)', 
           'error'
         );
-        highlightInputError(splitCountInput);
+        highlightInputError(sectionCountInput);
         return;
       }
       
-      // 检查至少选择了一种运算类型
       const operations = [];
       if (document.getElementById('addition').checked) operations.push('addition');
       if (document.getElementById('subtraction').checked) operations.push('subtraction');
@@ -1076,7 +1044,6 @@
         return;
       }
       
-      // 显示加载状态
       initialMessage.classList.add('hidden');
       questionsContainer.classList.add('hidden');
       paginationControls.classList.add('hidden');
@@ -1084,12 +1051,10 @@
       answersPaginationControls.classList.add('hidden');
       loadingIndicator.classList.remove('hidden');
       
-      // 模拟加载延迟
       setTimeout(() => {
         generatedQuestions = [];
         generatedAnswers = [];
         
-        // 生成题目
         for (let i = 0; i < questionCount; i++) {
           const operationType = operations[Math.floor(Math.random() * operations.length)];
           let questionText, result;
@@ -1119,19 +1084,15 @@
           generatedAnswers.push(`${questionText} ${result}`);
         }
         
-        // 分页处理
         questionPages = splitIntoPages(generatedQuestions);
         answerPages = splitIntoPages(generatedAnswers);
         
-        // 重置当前页
         currentPage = 1;
         currentAnswerPage = 1;
         
-        // 渲染页面
         renderQuestionPages();
         renderAnswerPages();
         
-        // 更新统计信息
         if (currentLang === 'zh') {
           questionStats.textContent = `${questionCount} 题`;
           pageStats.textContent = `${questionPages.length} 页`;
@@ -1140,32 +1101,28 @@
           pageStatsEn.textContent = `${questionPages.length} pages`;
         }
         
-        // 隐藏加载状态，显示题目和分页控件
         loadingIndicator.classList.add('hidden');
         questionsContainer.classList.remove('hidden');
         paginationControls.classList.remove('hidden');
         
-        // 更新分页控件
         updatePagination();
         updateAnswerPagination();
         
         showNotification(
           currentLang === 'zh' 
-            ? `成功生成 ${questionCount} 道题目，共 ${questionPages.length} 页。请检查预览效果，必要时调整设置。`
-            : `Successfully generated ${questionCount} questions, total ${questionPages.length} pages. Check preview and adjust settings if necessary.`, 
+            ? `成功生成 ${questionCount} 道题目，分为 ${sectionCount} 段，共 ${questionPages.length} 页。`
+            : `Successfully generated ${questionCount} questions, divided into ${sectionCount} sections, total ${questionPages.length} pages.`, 
           'success'
         );
         
       }, 600);
     }
     
-    // 输入错误高亮
     function highlightInputError(input) {
       input.classList.add('border-red-500');
       setTimeout(() => input.classList.remove('border-red-500'), 2000);
     }
     
-    // 生成各类题目
     function generateAdditionQuestion(range) {
       const num1 = Math.floor(Math.random() * range) + 1;
       const maxNum2 = Math.min(range - num1, range);
@@ -1189,24 +1146,19 @@
       return [`${num1} × ${num2} =`, result];
     }
     
-    // 修正后的除法题目生成（避免0结果）
     function generateDivisionQuestion(range) {
-      // 除数至少为1，且不超过range的1/2（避免商过小）
       const num2 = Math.floor(Math.random() * (Math.floor(range / 2) - 1)) + 1;
-      // 商至少为1，且乘积不超过range
       const maxQuotient = Math.floor(range / num2);
       const quotient = maxQuotient > 0 ? Math.floor(Math.random() * maxQuotient) + 1 : 1;
       const num1 = num2 * quotient;
       return [`${num1} ÷ ${num2} =`, quotient];
     }
     
-    // 修改比较题生成逻辑，移除下划线
     function generateComparisonQuestion(range) {
       const num1 = Math.floor(Math.random() * range) + 1;
       const num2 = Math.floor(Math.random() * range) + 1;
       let operator = num1 > num2 ? ">" : (num1 < num2 ? "<" : "=");
-      // 移除下划线，直接生成带等号的格式
-      return [`${num1} ${operator} ${num2} =`, operator];
+      return [`${num1} ____ ${num2}`, operator];
     }
     
     function generateBracketQuestion(range) {
@@ -1234,7 +1186,6 @@
       return [`(${num1} ${innerOp} ${num2}) ${outerOp} ${num3} =`, result];
     }
     
-    // 导出题目函数（仅保留PDF格式）
     function exportQuestions() {
       if (generatedQuestions.length === 0) {
         showNotification(
@@ -1244,19 +1195,16 @@
         return;
       }
 
-      // 固定使用PDF格式
       const exportFormat = 'pdf';
-      // 获取设置
       const paper = getPaperDimensions();
       const fontSize = parseInt(fontSizeInput.value) || 14;
-      const fontBold = fontBoldInput.checked; // 新增
       const rowCount = parseInt(rowCountInput.value) || 40;
       const colCount = parseInt(colCountInput.value) || 6;
-      const splitCount = parseInt(splitCountInput.value) || 0; // 新增
       const includeAnswers = includeAnswersCheckbox.checked;
       const answersOnNewPage = answersOnNewPageCheckbox.checked;
+      const isBold = fontBoldCheckbox.checked;
+      const sectionCount = parseInt(sectionCountInput.value) || 1;
 
-      // 生成文件名
       const date = new Date();
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -1270,7 +1218,6 @@
         ? `${numberRange}以内运算题_A4_${timeStr}`
         : `Math_Exercises_Within_${numberRange}_A4_${timeStr}`;
 
-      // 显示导出提示并禁用按钮
       showNotification(
         currentLang === 'zh' 
           ? `正在导出为PDF格式...` 
@@ -1278,148 +1225,129 @@
         'info'
       );
       
-      // 禁用导出按钮避免重复点击
       exportBtn.disabled = true;
       exportBtn.innerHTML = `<i class="fa fa-spinner fa-spin mr-2"></i> ${currentLang === 'zh' ? '导出中...' : 'Exporting...'}`;
 
-      // 调用PDF导出函数
-      exportAsPdf(fileName, paper, fontSize, fontBold, rowCount, colCount, splitCount, includeAnswers, answersOnNewPage);
+      exportAsPdf(fileName, paper, fontSize, rowCount, colCount, includeAnswers, answersOnNewPage, isBold, sectionCount);
     }
     
-    // 导出为PDF（优化字体和边界，新增加粗、分段支持）
-    function exportAsPdf(fileName, paper, fontSize, fontBold, rowCount, colCount, splitCount, includeAnswers, answersOnNewPage) {
+    // 优化：PDF导出支持分段和加粗
+    function exportAsPdf(fileName, paper, fontSize, rowCount, colCount, includeAnswers, answersOnNewPage, isBold, sectionCount) {
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF('p', 'mm', [paper.width, paper.height]);
       
-      // 尝试设置开源字体（Noto Sans SC）
       try {
-        pdf.setFont('notosanssc', fontBold ? 'bold' : 'normal'); // 新增加粗支持
+        pdf.setFont('notosanssc', isBold ? 'bold' : 'normal');
       } catch (e) {
-        console.log('使用默认字体:', e); // 兼容处理
-        if (fontBold) pdf.setFontType('bold'); // 备用加粗设置
+        console.log('使用默认字体:', e);
+        if (isBold) pdf.setFontType('bold');
       }
       
       const fontSizePt = fontSize * 0.75;
-      // 修正行高计算（1px = 0.264583mm，增加20%避免拥挤）
       const rowHeight = (fontSize * 1.8) * 0.264583;
-      const segmentGap = 10; // 段间距（mm）
+      const questionsPerPage = rowCount * colCount;
       
-      // 添加题目页面
-      questionPages.forEach((page, pageIndex) => {
-        if (pageIndex > 0) pdf.addPage();
-        pdf.setFontSize(fontSizePt);
-        if (fontBold) pdf.setFontType('bold');
-        
-        const startX = paper.margin;
-        let startY = paper.margin + 10;
-        const columnWidth = (paper.contentWidth) / colCount;
-        
-        // 处理分段逻辑
-        let segmentIndex = 0;
-        let currentSegment = [];
-        
-        for (let i = 0; i < page.length; i++) {
-          currentSegment.push(page[i]);
+      // 分段处理题目
+      [sectionedQuestions, sectionedAnswers] = splitIntoSections(generatedQuestions, generatedAnswers);
+      
+      // 构建带分段标题的完整题目列表
+      let fullQuestions = [];
+      sectionedQuestions.forEach((section, sectionIndex) => {
+        // 添加分段标题
+        fullQuestions.push({
+          type: 'title',
+          text: currentLang === 'zh' ? `第 ${sectionIndex + 1} 段` : `Section ${sectionIndex + 1}`
+        });
+        // 添加题目
+        section.forEach(q => fullQuestions.push({
+          type: 'question',
+          text: q
+        }));
+      });
+      
+      // 导出题目页面
+      let currentY = paper.margin + 10;
+      let currentPageNum = 1;
+      let questionIndex = 0;
+      
+      pdf.setFontSize(fontSizePt + 2); // 标题字号稍大
+      
+      fullQuestions.forEach((item, idx) => {
+        if (item.type === 'title') {
+          // 绘制分段标题
+          if (currentY + rowHeight * 2 > paper.height - paper.margin - 10) {
+            pdf.addPage();
+            currentY = paper.margin + 10;
+            currentPageNum++;
+          }
           
-          // 达到分段数量或最后一题
-          if (splitCount > 0 && (currentSegment.length >= splitCount || i === page.length - 1)) {
-            segmentIndex++;
-            
-            // 添加段标题
-            if (splitCount > 0) {
-              const segmentTitle = currentLang === 'zh' ? `第 ${segmentIndex} 段` : `Segment ${segmentIndex}`;
-              pdf.text(segmentTitle, startX, startY);
-              startY += rowHeight + 5; // 标题高度+间距
-            }
-            
-            // 绘制当前段题目
-            currentSegment.forEach((question, idx) => {
-              const row = Math.floor(idx / colCount);
-              const col = idx % colCount;
-              const x = startX + (col * columnWidth) + 5;
-              const y = startY + (row * rowHeight);
-              
-              // 边界检查，避免内容溢出
-              if (y + rowHeight < paper.height - paper.margin - 10) {
-                pdf.text(question, x, y);
-              }
-            });
-            
-            // 更新起始Y坐标（添加段间距）
-            const segmentRows = Math.ceil(currentSegment.length / colCount);
-            startY += segmentRows * rowHeight + segmentGap;
-            
-            currentSegment = [];
-          } else if (splitCount === 0) {
-            // 不分段逻辑
-            const row = Math.floor(i / colCount);
-            const col = i % colCount;
-            const x = startX + (col * columnWidth) + 5;
-            const y = startY + (row * rowHeight);
-            
-            if (y + rowHeight < paper.height - paper.margin - 10) {
-              pdf.text(page[i], x, y);
-            }
+          pdf.text(item.text, paper.width / 2, currentY, { align: 'center' });
+          currentY += rowHeight * 1.5;
+        } else {
+          // 绘制题目
+          if (questionIndex % questionsPerPage === 0 && questionIndex > 0) {
+            pdf.addPage();
+            currentY = paper.margin + 10;
+            currentPageNum++;
+            pdf.setFontSize(fontSizePt);
+          }
+          
+          const col = questionIndex % colCount;
+          const row = Math.floor((questionIndex % questionsPerPage) / colCount);
+          const x = paper.margin + (col * (paper.contentWidth / colCount)) + 5;
+          
+          if (currentY + rowHeight > paper.height - paper.margin - 10) {
+            pdf.addPage();
+            currentY = paper.margin + 10;
+            currentPageNum++;
+          }
+          
+          pdf.setFontSize(fontSizePt);
+          pdf.text(item.text, x, currentY);
+          
+          questionIndex++;
+          if ((questionIndex % colCount) === 0) {
+            currentY += rowHeight;
           }
         }
       });
       
-      // 添加答案页面
+      // 导出答案页面
       if (includeAnswers && answerPages.length > 0) {
-        answerPages.forEach((page, pageIndex) => {
+        if (answersOnNewPage) {
           pdf.addPage();
-          pdf.setFontSize(fontSizePt);
-          if (fontBold) pdf.setFontType('bold');
-          
-          const startX = paper.margin;
-          let startY = paper.margin + 10;
-          const columnWidth = (paper.contentWidth) / colCount;
-          
-          // 处理答案分段
-          let segmentIndex = 0;
-          let currentSegment = [];
-          
-          for (let i = 0; i < page.length; i++) {
-            currentSegment.push(page[i]);
-            
-            if (splitCount > 0 && (currentSegment.length >= splitCount || i === page.length - 1)) {
-              segmentIndex++;
-              
-              // 添加段标题
-              if (splitCount > 0) {
-                const segmentTitle = currentLang === 'zh' ? `答案 - 第 ${segmentIndex} 段` : `Answers - Segment ${segmentIndex}`;
-                pdf.text(segmentTitle, startX, startY);
-                startY += rowHeight + 5;
-              }
-              
-              // 绘制答案
-              currentSegment.forEach((answer, idx) => {
-                const row = Math.floor(idx / colCount);
-                const col = idx % colCount;
-                const x = startX + (col * columnWidth) + 5;
-                const y = startY + (row * rowHeight);
-                
-                if (y + rowHeight < paper.height - paper.margin - 10) {
-                  pdf.text(answer, x, y);
-                }
-              });
-              
-              // 更新Y坐标
-              const segmentRows = Math.ceil(currentSegment.length / colCount);
-              startY += segmentRows * rowHeight + segmentGap;
-              currentSegment = [];
-            } else if (splitCount === 0) {
-              // 不分段答案
-              const row = Math.floor(i / colCount);
-              const col = i % colCount;
-              const x = startX + (col * columnWidth) + 5;
-              const y = startY + (row * rowHeight);
-              
-              if (y + rowHeight < paper.height - paper.margin - 10) {
-                pdf.text(page[i], x, y);
-              }
-            }
+          currentY = paper.margin + 10;
+          currentPageNum++;
+        }
+        
+        pdf.setFontSize(fontSizePt);
+        let answerIndex = 0;
+        
+        answerPages.forEach((page, pageIndex) => {
+          if (pageIndex > 0) {
+            pdf.addPage();
+            currentY = paper.margin + 10;
+            currentPageNum++;
           }
+          
+          page.forEach((answer, idx) => {
+            const col = answerIndex % colCount;
+            const row = Math.floor(answerIndex / colCount);
+            const x = paper.margin + (col * (paper.contentWidth / colCount)) + 5;
+            
+            if (currentY + rowHeight > paper.height - paper.margin - 10) {
+              pdf.addPage();
+              currentY = paper.margin + 10;
+              currentPageNum++;
+            }
+            
+            pdf.text(answer, x, currentY);
+            
+            answerIndex++;
+            if ((answerIndex % colCount) === 0) {
+              currentY += rowHeight;
+            }
+          });
         });
       }
       
@@ -1429,13 +1357,11 @@
           currentLang === 'zh' ? 'PDF导出成功' : 'PDF exported successfully', 
           'success'
         );
-        // 恢复按钮状态
         exportBtn.disabled = false;
         exportBtn.innerHTML = `<i class="fa fa-download mr-2"></i> ${currentLang === 'zh' ? '导出PDF' : 'Export PDF'}`;
       }, 1000);
     }
     
-    // 显示通知提示
     function showNotification(message, type = 'info') {
       const notification = document.createElement('div');
       
@@ -1475,7 +1401,6 @@
       }, 3000);
     }
     
-    // 页面加载动画和安全设置
     document.addEventListener('DOMContentLoaded', () => {
       const mainContent = document.querySelector('main');
       
@@ -1483,12 +1408,10 @@
         mainContent.classList.remove('opacity-0');
       }, 300);
 
-      // 禁止鼠标右键
       document.addEventListener('contextmenu', (e) => {
         e.preventDefault();
       });
 
-      // 禁止快捷键
       document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && ['s', 'u', 'c'].includes(e.key.toLowerCase())) {
           e.preventDefault();

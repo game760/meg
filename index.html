@@ -567,7 +567,7 @@
     </div>
   </footer>
 
-  <script>
+<script>
     // 全局变量
     let generatedQuestions = [];
     let generatedAnswers = [];
@@ -832,7 +832,7 @@
       };
     }
     
-    // 渲染题目页面 - 修复分段为0的逻辑
+    // 渲染题目页面 - 修复分段为0的逻辑（移除下划线）
     function renderQuestionPages() {
       questionsPages.innerHTML = '';
       const colCount = parseInt(colCountInput.value) || 6;
@@ -864,14 +864,11 @@
             questionEl.className = `flex items-center p-3 border border-gray-100 rounded-lg hover:bg-neutral transition-colors ${isBold ? 'question-bold' : ''}`;
             questionEl.style.fontSize = `${fontSize}px`;
             
-            if (question.includes('____')) {
-              questionEl.innerHTML = `<span class="text-gray-800">${question}</span>`;
-            } else {
-              questionEl.innerHTML = `
-                <span class="text-gray-800">${question}</span>
-                <span class="flex-1 border-b border-gray-300 mx-2"></span>
-              `;
-            }
+            // 移除下划线判断，统一渲染带横线的样式
+            questionEl.innerHTML = `
+              <span class="text-gray-800">${question}</span>
+              <span class="flex-1 border-b border-gray-300 mx-2"></span>
+            `;
             
             segmentElement.appendChild(questionEl);
           });
@@ -900,14 +897,11 @@
                 questionEl.className = `flex items-center p-3 border border-gray-100 rounded-lg hover:bg-neutral transition-colors ${isBold ? 'question-bold' : ''}`;
                 questionEl.style.fontSize = `${fontSize}px`;
                 
-                if (question.includes('____')) {
-                  questionEl.innerHTML = `<span class="text-gray-800">${question}</span>`;
-                } else {
-                  questionEl.innerHTML = `
-                    <span class="text-gray-800">${question}</span>
-                    <span class="flex-1 border-b border-gray-300 mx-2"></span>
-                  `;
-                }
+                // 移除下划线判断，统一渲染带横线的样式
+                questionEl.innerHTML = `
+                  <span class="text-gray-800">${question}</span>
+                  <span class="flex-1 border-b border-gray-300 mx-2"></span>
+                `;
                 
                 segmentElement.appendChild(questionEl);
               });
@@ -1206,11 +1200,13 @@
       return [`${num1} ÷ ${num2} =`, quotient];
     }
     
+    // 修改比较题生成逻辑，移除下划线
     function generateComparisonQuestion(range) {
       const num1 = Math.floor(Math.random() * range) + 1;
       const num2 = Math.floor(Math.random() * range) + 1;
       let operator = num1 > num2 ? ">" : (num1 < num2 ? "<" : "=");
-      return [`${num1} ____ ${num2}`, operator];
+      // 移除下划线，直接生成带等号的格式
+      return [`${num1} ${operator} ${num2} =`, operator];
     }
     
     function generateBracketQuestion(range) {

@@ -850,13 +850,13 @@
       };
     }
     
-    // 渲染题目页面
+    // 渲染题目页面 - 修复分段为0的逻辑
     function renderQuestionPages() {
       questionsPages.innerHTML = '';
       const colCount = parseInt(colCountInput.value) || 6;
       const fontSize = parseInt(fontSizeInput.value) || 14;
-      const isBold = fontBoldInput.checked; // 新增
-      const splitCount = parseInt(splitCountInput.value) || 0; // 新增
+      const isBold = fontBoldInput.checked;
+      const splitCount = parseInt(splitCountInput.value) || 0;
       
       questionPages.forEach((page, pageIndex) => {
         const pageElement = document.createElement('div');
@@ -869,50 +869,70 @@
           </h3>
         `;
         
-        // 处理分段逻辑
-        let segmentIndex = 0;
-        let currentSegment = [];
         const gridContainer = document.createElement('div');
-        gridContainer.className = 'space-y-6'; // 段间距
+        gridContainer.className = 'space-y-6';
         
-        // 分段处理
-        for (let i = 0; i < page.length; i++) {
-          currentSegment.push(page[i]);
+        // 修复：分段为0时直接渲染所有题目
+        if (splitCount <= 0) {
+          const segmentElement = document.createElement('div');
+          segmentElement.className = `grid grid-cols-${colCount} gap-3`;
           
-          // 达到分段数量或最后一题
-          if (splitCount > 0 && (currentSegment.length >= splitCount || i === page.length - 1)) {
-            segmentIndex++;
-            const segmentElement = document.createElement('div');
-            segmentElement.className = `grid grid-cols-${colCount} gap-3`;
+          page.forEach((question, index) => {
+            const questionEl = document.createElement('div');
+            questionEl.className = `flex items-center p-3 border border-gray-100 rounded-lg hover:bg-neutral transition-colors ${isBold ? 'question-bold' : ''}`;
+            questionEl.style.fontSize = `${fontSize}px`;
             
-            // 添加段标题（可选）
-            if (splitCount > 0) {
+            if (question.includes('____')) {
+              questionEl.innerHTML = `<span class="text-gray-800">${question}</span>`;
+            } else {
+              questionEl.innerHTML = `
+                <span class="text-gray-800">${question}</span>
+                <span class="flex-1 border-b border-gray-300 mx-2"></span>
+              `;
+            }
+            
+            segmentElement.appendChild(questionEl);
+          });
+          
+          gridContainer.appendChild(segmentElement);
+        } else {
+          // 原有分段逻辑保持不变
+          let segmentIndex = 0;
+          let currentSegment = [];
+          
+          for (let i = 0; i < page.length; i++) {
+            currentSegment.push(page[i]);
+            
+            if (currentSegment.length >= splitCount || i === page.length - 1) {
+              segmentIndex++;
+              const segmentElement = document.createElement('div');
+              segmentElement.className = `grid grid-cols-${colCount} gap-3`;
+              
               const segmentTitle = document.createElement('div');
               segmentTitle.className = `col-span-${colCount} text-sm text-gray-500 mb-2`;
               segmentTitle.innerHTML = `<span class="lang-zh">第 ${segmentIndex} 段</span><span class="lang-en hidden">Segment ${segmentIndex}</span>`;
               segmentElement.appendChild(segmentTitle);
+              
+              currentSegment.forEach((question, index) => {
+                const questionEl = document.createElement('div');
+                questionEl.className = `flex items-center p-3 border border-gray-100 rounded-lg hover:bg-neutral transition-colors ${isBold ? 'question-bold' : ''}`;
+                questionEl.style.fontSize = `${fontSize}px`;
+                
+                if (question.includes('____')) {
+                  questionEl.innerHTML = `<span class="text-gray-800">${question}</span>`;
+                } else {
+                  questionEl.innerHTML = `
+                    <span class="text-gray-800">${question}</span>
+                    <span class="flex-1 border-b border-gray-300 mx-2"></span>
+                  `;
+                }
+                
+                segmentElement.appendChild(questionEl);
+              });
+              
+              gridContainer.appendChild(segmentElement);
+              currentSegment = [];
             }
-            
-            // 添加题目
-            currentSegment.forEach((question, index) => {
-              const questionEl = document.createElement('div');
-              questionEl.className = `flex items-center p-3 border border-gray-100 rounded-lg hover:bg-neutral transition-colors ${isBold ? 'question-bold' : ''}`;
-              questionEl.style.fontSize = `${fontSize}px`;
-              
-              if (question.includes('____')) {
-                questionEl.innerHTML = `<span class="text-gray-800">${question}</span>`;
-              } else {
-                questionEl.innerHTML = `
-                  <span class="text-gray-800">${question}</span>
-                  <span class="flex-1 border-b border-gray-300 mx-2"></span>
-                `;
-              }
-              
-              segmentElement.appendChild(questionEl);
-            });
-            
-            gridContainer.appendChild(segmentElement);
-            currentSegment = [];
           }
         }
         
@@ -921,13 +941,13 @@
       });
     }
     
-    // 渲染答案页面
+    // 渲染答案页面 - 修复分段为0的逻辑
     function renderAnswerPages() {
       answersContainer.innerHTML = '';
       const colCount = parseInt(colCountInput.value) || 6;
       const fontSize = parseInt(fontSizeInput.value) || 14;
-      const isAnswerUnderline = answerUnderlineInput.checked; // 新增
-      const splitCount = parseInt(splitCountInput.value) || 0; // 新增
+      const isAnswerUnderline = answerUnderlineInput.checked;
+      const splitCount = parseInt(splitCountInput.value) || 0;
       
       answerPages.forEach((page, pageIndex) => {
         const pageElement = document.createElement('div');
@@ -940,37 +960,52 @@
           </h3>
         `;
         
-        // 处理答案分段
-        let segmentIndex = 0;
-        let currentSegment = [];
         const gridContainer = document.createElement('div');
         gridContainer.className = 'space-y-6';
         
-        for (let i = 0; i < page.length; i++) {
-          currentSegment.push(page[i]);
+        // 修复：分段为0时直接渲染所有答案
+        if (splitCount <= 0) {
+          const segmentElement = document.createElement('div');
+          segmentElement.className = `grid grid-cols-${colCount} gap-3`;
           
-          if (splitCount > 0 && (currentSegment.length >= splitCount || i === page.length - 1)) {
-            segmentIndex++;
-            const segmentElement = document.createElement('div');
-            segmentElement.className = `grid grid-cols-${colCount} gap-3`;
+          page.forEach((answer, index) => {
+            const answerEl = document.createElement('div');
+            answerEl.className = `p-3 border border-gray-100 rounded-lg bg-neutral ${isAnswerUnderline ? 'answer-underline' : ''}`;
+            answerEl.style.fontSize = `${fontSize}px`;
+            answerEl.textContent = answer;
+            segmentElement.appendChild(answerEl);
+          });
+          
+          gridContainer.appendChild(segmentElement);
+        } else {
+          // 原有分段逻辑保持不变
+          let segmentIndex = 0;
+          let currentSegment = [];
+          
+          for (let i = 0; i < page.length; i++) {
+            currentSegment.push(page[i]);
             
-            if (splitCount > 0) {
+            if (currentSegment.length >= splitCount || i === page.length - 1) {
+              segmentIndex++;
+              const segmentElement = document.createElement('div');
+              segmentElement.className = `grid grid-cols-${colCount} gap-3`;
+              
               const segmentTitle = document.createElement('div');
               segmentTitle.className = `col-span-${colCount} text-sm text-gray-500 mb-2`;
               segmentTitle.innerHTML = `<span class="lang-zh">第 ${segmentIndex} 段</span><span class="lang-en hidden">Segment ${segmentIndex}</span>`;
               segmentElement.appendChild(segmentTitle);
+              
+              currentSegment.forEach((answer, index) => {
+                const answerEl = document.createElement('div');
+                answerEl.className = `p-3 border border-gray-100 rounded-lg bg-neutral ${isAnswerUnderline ? 'answer-underline' : ''}`;
+                answerEl.style.fontSize = `${fontSize}px`;
+                answerEl.textContent = answer;
+                segmentElement.appendChild(answerEl);
+              });
+              
+              gridContainer.appendChild(segmentElement);
+              currentSegment = [];
             }
-            
-            currentSegment.forEach((answer, index) => {
-              const answerEl = document.createElement('div');
-              answerEl.className = `p-3 border border-gray-100 rounded-lg bg-neutral ${isAnswerUnderline ? 'answer-underline' : ''}`;
-              answerEl.style.fontSize = `${fontSize}px`;
-              answerEl.textContent = answer;
-              segmentElement.appendChild(answerEl);
-            });
-            
-            gridContainer.appendChild(segmentElement);
-            currentSegment = [];
           }
         }
         
@@ -1290,7 +1325,7 @@
       
       const fontSizePt = fontSize * 0.75;
       // 修正行高计算（1px = 0.264583mm，增加20%避免拥挤）
-      const rowHeight = (fontSize * 1.8) * 0.264583;
+            const rowHeight = (fontSize * 1.8) * 0.264583;
       const segmentGap = 10; // 段间距（mm）
       
       // 添加题目页面
@@ -1347,7 +1382,7 @@
             const y = startY + (row * rowHeight);
             
             if (y + rowHeight < paper.height - paper.margin - 10) {
-              pdf.text(question, x, y);
+              pdf.text(page[i], x, y);
             }
           }
         }
@@ -1414,11 +1449,11 @@
               
               if (y + rowHeight < paper.height - paper.margin - 10) {
                 if (answerUnderline) {
-                  pdf.text(answer, x, y);
-                  const textWidth = pdf.getTextWidth(answer);
+                  pdf.text(page[i], x, y);
+                  const textWidth = pdf.getTextWidth(page[i]);
                   pdf.line(x, y + 2, x + textWidth, y + 2);
                 } else {
-                  pdf.text(answer, x, y);
+                  pdf.text(page[i], x, y);
                 }
               }
             }
